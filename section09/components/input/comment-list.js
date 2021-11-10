@@ -15,22 +15,10 @@ function CommentList() {
     <ul className={classes.comments}>
       {comments &&
         comments.map((comment) => (
-          <li key={comment.id}>
+          <li key={comment._id}>
             <p>{comment.text}</p>
           </li>
         ))}
-      <li>
-        <p>My comment is amazing!</p>
-        <div>
-          By <address>Maximilian</address>
-        </div>
-      </li>
-      <li>
-        <p>My comment is amazing!</p>
-        <div>
-          By <address>Maximilian</address>
-        </div>
-      </li>
     </ul>
   );
 }

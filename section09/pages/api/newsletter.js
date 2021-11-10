@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { emailIsValid } from "../../helpers/api-util";
+import { connectDatabase, insertDocument } from "../../helpers/db-util";
 
 export function getDataPath(fileName) {
   return path.join(process.cwd(), "data", fileName + ".json");
@@ -23,7 +24,7 @@ export function verifyEmailExists(email) {
   return data.find((item) => email === item);
 }
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
   if (req.method === "POST") {
     const email = req.body.email.toLowerCase();
 
@@ -33,6 +34,23 @@ export default function handler(req, res) {
     }
     if (verifyEmailExists(email)) {
       res.status(400).json({ message: "E-mail already exists" });
+      return;
+    }
+
+    let client;
+
+    try {
+      client = await connectDatabase();
+    } catch (e) {
+      res.status(500).json({ message: "Cant connect to server" });
+      return;
+    }
+
+    try {
+      await insertDocument(client, "newsletter", { email: email });
+      client.close();
+    } catch (e) {
+      res.status(500).json({ message: "Insert data failed" });
       return;
     }
 
