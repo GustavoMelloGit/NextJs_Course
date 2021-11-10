@@ -5,6 +5,7 @@ function HomePage() {
   const [users, setUsers] = useState();
   const emailRef = useRef();
   const passwordRef = useRef();
+  const feedbackRef = useRef();
 
   function getUsers() {
     fetch("/api/users")
@@ -16,9 +17,12 @@ function HomePage() {
     e.preventDefault();
     const enteredEmail = emailRef.current.value;
     const enteredPassword = passwordRef.current.value;
+    const enteredFeedback = feedbackRef.current.value;
+
     const body = {
       email: enteredEmail,
       password: enteredPassword,
+      feedback: enteredFeedback,
     };
     fetch("/api/users", {
       method: "POST",
@@ -49,19 +53,29 @@ function HomePage() {
             ref={passwordRef}
           />
         </div>
+        <div>
+          <label htmlFor="feedback">Type your feedback</label>
+          <input
+            type="textarea"
+            placeholder="Feedback"
+            id="feedback"
+            ref={feedbackRef}
+          />
+        </div>
         <button type="submit">Submit</button>
       </form>
       <hr />
       <button onClick={getUsers}>Load users</button>
-      <ul>
-        {users &&
-          users.map((user) => (
+      {users && (
+        <ul>
+          {users.map((user) => (
             <li key={user.id}>
               <h3>{user.email}</h3>
               <p>{user.password}</p>
             </li>
           ))}
-      </ul>
+        </ul>
+      )}
     </div>
   );
 }

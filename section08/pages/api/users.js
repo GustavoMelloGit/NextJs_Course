@@ -21,6 +21,7 @@ export default function handler(req, res) {
   if (req.method === "POST") {
     const email = req.body.email;
     const password = req.body.password;
+    const feedback = req.body.feedback;
 
     if (!verifyValidEmail(email)) {
       res.status(400).json({
@@ -29,9 +30,10 @@ export default function handler(req, res) {
     }
 
     const newUser = {
-      id: new Date().toString(),
+      id: +new Date(),
       email,
       password,
+      feedback,
     };
 
     const filePath = getPath("users");
