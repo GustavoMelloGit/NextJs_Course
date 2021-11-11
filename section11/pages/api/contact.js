@@ -23,10 +23,10 @@ export default async function handler(req, res) {
       message,
     };
 
+    const connectionString = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_CLUSTERNAME}.sbrld.mongodb.net/${process.env.MONGODB_DATABASE}?retryWrites=true&w=majority`;
+
     try {
-      client = await MongoClient.connect(
-        "mongodb+srv://gugapix:Gu29072001@cluster0.sbrld.mongodb.net/NextJsBlog?retryWrites=true&w=majority"
-      );
+      client = await MongoClient.connect(connectionString);
     } catch (e) {
       res.status(500).json({ message: "Internal server error" });
       return;
