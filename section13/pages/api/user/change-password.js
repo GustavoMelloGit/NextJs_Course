@@ -8,6 +8,7 @@ export default async function changePassword(req, res) {
   if (method === "PATCH") {
     const { body } = req;
     const { password, newPassword } = body;
+
     const session = await getSession({ req });
 
     if (!session) {
@@ -28,9 +29,12 @@ export default async function changePassword(req, res) {
       }
 
       const currentPassword = user.password;
+      const passwordAreEqual = await verifyPassword(
+        newPassword,
+        currentPassword
+      );
 
-      const passwordAreEqual = await verifyPassword(password, currentPassword);
-      if (!passwordAreEqual) {
+      if (passwordAreEqual) {
         res.status(403).json({ message: "Password do not match" });
         client.close();
         return;
@@ -38,8 +42,8 @@ export default async function changePassword(req, res) {
 
       const hashedNewPassword = await hashData(newPassword);
 
-      usersCollection.updateOne(
-        { email },
+      await usersCollection.updateOne(
+        { email: email },
         { $set: { password: hashedNewPassword } }
       );
       client.close();
